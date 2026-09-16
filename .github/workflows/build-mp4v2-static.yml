@@ -1,0 +1,35 @@
+name: Build mp4v2 Static Single Binary (Ubuntu24.04)
+on:
+  push:
+  workflow_dispatch: # 网页手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y build-essential autoconf automake libtool pkg-config
+
+      - name: Autotools build static libmp4v2
+        run: |
+          autoreconf -fiv
+          # --enable-static 编译静态库；--disable-shared 不生成so
+          ./configure --prefix="$PWD/out" --enable-static --disable-shared
+          make -j$(nproc)
+          make install
+
+      - name: Test static binary
+        run: |
+          ./out/bin/mp4info --version
+
+      - name: Upload single binaries artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mp4v2-static-ubuntu2404-amd64
+          path: out/bin/
+          retention-days: 90
