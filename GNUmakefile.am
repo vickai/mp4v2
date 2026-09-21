@@ -204,6 +204,7 @@ if ADD_UTIL
     bin_PROGRAMS += mp4tags
     bin_PROGRAMS += mp4track
     bin_PROGRAMS += mp4trackdump
+    bin_PROGRAMS += mp4freetag
 endif
 
 mp4art_SOURCES       = util/impl.h util/mp4art.cpp
@@ -215,6 +216,7 @@ mp4subtitle_SOURCES  = util/impl.h util/mp4subtitle.cpp
 mp4tags_SOURCES      = util/impl.h util/mp4tags.cpp
 mp4track_SOURCES     = util/impl.h util/mp4track.cpp
 mp4trackdump_SOURCES = util/impl.h util/mp4trackdump.cpp
+mp4freetag_SOURCES   = util/impl.h util/mp4freetag.cpp
 
 mp4art_LDADD       = libmp4v2.la libutil.la $(X_LDFLAGS)
 mp4chaps_LDADD     = libmp4v2.la libutil.la $(X_LDFLAGS)
@@ -225,6 +227,7 @@ mp4subtitle_LDADD  = libmp4v2.la $(X_LDFLAGS)
 mp4tags_LDADD      = libmp4v2.la $(X_LDFLAGS)
 mp4track_LDADD     = libmp4v2.la $(X_LDFLAGS)
 mp4trackdump_LDADD = libmp4v2.la $(X_LDFLAGS)
+mp4freetag_LDADD   = libmp4v2.la $(X_LDFLAGS)
 
 ###############################################################################
 
