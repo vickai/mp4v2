@@ -6,6 +6,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write # 允许创建 GitHub Release
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -33,3 +35,18 @@ jobs:
           name: mp4v2-static-ubuntu2404-amd64
           path: out/bin/
           retention-days: 90
+
+      - name: Create GitHub Release (on tag push)
+        if: startsWith(github.ref, 'refs/tags/') # 只在推送标签时创建 Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # 打包全部静态二进制（tar 是运行器自带工具，无需额外安装）
+          tar -czf mp4v2-static-ubuntu2404-amd64.tar.gz -C out bin
+          # 标签已有 Release（网页手动发布过）时 gh release create 会报错，
+          # 此时回退为只上传/覆盖二进制包
+          if ! gh release create "${{ github.ref_name }}" mp4v2-static-ubuntu2404-amd64.tar.gz \
+              --title "mp4v2 static binaries ${{ github.ref_name }}" \
+              --notes "Ubuntu 24.04 amd64 静态单文件二进制：mp4art, mp4chaps, mp4extract, mp4file, mp4info, mp4subtitle, mp4tags, mp4track, mp4trackdump, mp4freetag"; then
+            gh release upload "${{ github.ref_name }}" mp4v2-static-ubuntu2404-amd64.tar.gz --clobber
+          fi
